@@ -1,0 +1,43 @@
+.glam-shell {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: var(--sp-6);
+}
+
+.glam-card {
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--sp-8) var(--sp-6);
+  text-align: center;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.glam-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-soft);
+}
+
+.glam-title {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xl);
+}
+
+/* El degradado se recorta a la forma de las letras para el efecto "brillante". */
+.glam-title .brand {
+  background: var(--bg-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.glam-subtitle {
+  margin-top: var(--sp-2);
+  color: var(--c-ink-soft);
+}

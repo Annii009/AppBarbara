@@ -1,0 +1,36 @@
+.memory-board {
+  display: grid;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+
+.memory-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  color: #fff;
+  background: var(--bg-brand);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+.memory-card:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.memory-card[data-face-up="true"] {
+  color: var(--c-pink-700);
+  background: var(--c-surface);
+  border: 2px solid var(--c-pink-300);
+}
+
+.memory-card[data-matched="true"] {
+  color: var(--c-success);
+  background: color-mix(in srgb, var(--c-mint) 45%, var(--c-surface));
+  border-color: var(--c-mint);
+  opacity: 0.85;
+}

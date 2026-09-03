@@ -1,0 +1,90 @@
+/*
+ * Tokens del tema "glam".
+ *
+ * Toda decision visual (color, sombra, radio, tipografia) vive aqui como
+ * variable CSS. Los componentes NUNCA escriben un color literal: usan var().
+ * Asi se puede reajustar la paleta entera desde un solo archivo y mas adelante
+ * anadir temas alternativos desbloqueables sin tocar un solo componente.
+ */
+
+:root {
+  /* --- Rosas: el color principal de la marca --- */
+  --c-pink-50: #fff5fa;
+  --c-pink-100: #ffe4f1;
+  --c-pink-200: #ffc7e2;
+  --c-pink-300: #ffa1cd;
+  --c-pink-400: #ff6fb2;
+  --c-pink-500: #ff4fa3;
+  --c-pink-600: #ec2b8a;
+  --c-pink-700: #c2126c;
+
+  /* --- Dorados: acentos, premios, brillos --- */
+  --c-gold-200: #ffeec2;
+  --c-gold-400: #f7cf6b;
+  --c-gold-500: #eeb52f;
+  --c-gold-600: #c8901a;
+
+  /* --- Pasteles de apoyo: categorias de juego, estados --- */
+  --c-lilac: #c9a7f5;
+  --c-mint: #9fe8cd;
+  --c-sky: #a8d8f8;
+  --c-peach: #ffc4a3;
+
+  /* --- Neutros calidos: nunca gris puro, siempre con tinte rosado --- */
+  --c-ink: #4a2540;
+  --c-ink-soft: #8a6079;
+  --c-ink-faint: #c9a3b8;
+  --c-surface: #ffffff;
+  --c-surface-alt: #fff9fc;
+  --c-border: #ffd9ea;
+
+  /* --- Semanticos --- */
+  --c-success: #2fae7e;
+  --c-danger: #e5484d;
+  --c-warning: var(--c-gold-600);
+
+  /* --- Fondos compuestos --- */
+  --bg-app: radial-gradient(
+      circle at 15% 0%,
+      var(--c-pink-100) 0%,
+      transparent 45%
+    ),
+    radial-gradient(circle at 85% 10%, #f3e8ff 0%, transparent 40%),
+    linear-gradient(180deg, var(--c-pink-50) 0%, #fdf7ff 100%);
+  --bg-brand: linear-gradient(135deg, var(--c-pink-400) 0%, var(--c-pink-600) 100%);
+  --bg-gold: linear-gradient(135deg, var(--c-gold-400) 0%, var(--c-gold-600) 100%);
+
+  /* --- Tipografia --- */
+  --font-display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Quicksand", system-ui, -apple-system, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.5rem;
+
+  /* --- Espaciado (escala de 4px) --- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-12: 3rem;
+
+  /* --- Radios: generosos, es lo que da el aire "de juguete" --- */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-pill: 999px;
+
+  /* --- Sombras: tintadas de rosa, nunca negro puro --- */
+  --shadow-sm: 0 2px 6px rgba(194, 18, 108, 0.1);
+  --shadow-md: 0 8px 24px rgba(194, 18, 108, 0.14);
+  --shadow-lg: 0 16px 40px rgba(194, 18, 108, 0.18);
+  --shadow-glow: 0 0 0 4px rgba(255, 79, 163, 0.22);
+
+  --transition: 180ms cubic-bezier(0.2, 0.8, 0.3, 1);
+}

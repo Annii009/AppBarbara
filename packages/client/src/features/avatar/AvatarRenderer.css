@@ -1,0 +1,24 @@
+.avatar-frame {
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.avatar-frame svg {
+  display: block;
+}
+
+.avatar-frame[data-background="bg-studio-pink"] {
+  background: linear-gradient(180deg, var(--c-pink-100), var(--c-pink-50));
+}
+
+.avatar-frame[data-background="bg-dream-clouds"] {
+  background: linear-gradient(180deg, #eaf4ff, #f6f0ff);
+}
+
+.avatar-frame[data-background="bg-starry-night"] {
+  background: linear-gradient(180deg, #4a3670, #241a3d);
+}

@@ -1,0 +1,36 @@
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+
+.number-pad-key {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--c-pink-700);
+  background: var(--c-surface-alt);
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.number-pad-key:hover:not(:disabled) {
+  border-color: var(--c-pink-300);
+}
+
+.number-pad-key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.number-pad-erase {
+  grid-column: 1 / -1;
+  aspect-ratio: auto;
+  font-size: var(--text-sm);
+}

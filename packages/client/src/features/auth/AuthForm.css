@@ -1,0 +1,31 @@
+.auth-form {
+  display: grid;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+  text-align: left;
+}
+
+.auth-form-error {
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--c-danger);
+  background: color-mix(in srgb, var(--c-danger) 8%, var(--c-surface));
+  border-radius: var(--radius-sm);
+}
+
+.auth-switch {
+  margin-top: var(--sp-6);
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+}
+
+.auth-switch a {
+  color: var(--c-pink-600);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}

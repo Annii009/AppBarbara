@@ -1,0 +1,23 @@
+{
+  "name": "@minibarbara/games",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sudoku": "./src/sudoku/index.ts",
+    "./wordsearch": "./src/wordsearch/index.ts",
+    "./memory": "./src/memory/index.ts",
+    "./twenty48": "./src/twenty48/index.ts",
+    "./simon": "./src/simon/index.ts"
+  },
+  "scripts": {
+    "test": "tsx --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@minibarbara/shared": "*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}

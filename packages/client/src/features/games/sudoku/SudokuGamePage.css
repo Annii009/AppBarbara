@@ -1,0 +1,42 @@
+.sudoku-difficulty-picker {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.sudoku-intro {
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+  text-align: center;
+}
+
+.sudoku-board-wrapper {
+  margin-top: var(--sp-4);
+}
+
+.sudoku-actions {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.sudoku-win {
+  margin-top: var(--sp-4);
+  text-align: center;
+}
+
+.sudoku-win-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.sudoku-win-time {
+  margin-top: var(--sp-2);
+  color: var(--c-ink-soft);
+}

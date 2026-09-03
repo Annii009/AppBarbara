@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+*.local
+
+# Base de datos SQLite (datos locales, nunca al repo)
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+data/
+
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Editor / SO
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+
+# Caches de build
+.tsbuildinfo
+*.tsbuildinfo
+.vite/

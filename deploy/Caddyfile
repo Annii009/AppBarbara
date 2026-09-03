@@ -1,0 +1,17 @@
+# Sustituye por tu subdominio de DuckDNS o tu dominio propio.
+# Caddy pide y renueva el certificado HTTPS solo, sin configuracion extra.
+TU-SUBDOMINIO.duckdns.org {
+	# La API va a Node, en el mismo servidor.
+	handle /api/* {
+		reverse_proxy localhost:4000
+	}
+
+	# Todo lo demas es el cliente ya compilado (npm run build).
+	handle {
+		root * /opt/minibarbara/packages/client/dist
+		try_files {path} /index.html
+		file_server
+	}
+
+	encode gzip
+}

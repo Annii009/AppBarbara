@@ -1,0 +1,46 @@
+.memory-difficulty-picker {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.memory-intro {
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+  text-align: center;
+}
+
+.memory-progress {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--c-ink-soft);
+  text-align: center;
+}
+
+.memory-actions {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.memory-win {
+  margin-top: var(--sp-4);
+  text-align: center;
+}
+
+.memory-win-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.memory-win-time {
+  margin-top: var(--sp-2);
+  color: var(--c-ink-soft);
+}

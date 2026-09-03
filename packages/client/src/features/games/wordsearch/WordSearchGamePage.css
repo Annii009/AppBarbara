@@ -1,0 +1,64 @@
+.wordsearch-theme-picker {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.wordsearch-intro {
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+  text-align: center;
+}
+
+.wordsearch-word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  padding: 0;
+  list-style: none;
+}
+
+.wordsearch-word-list li {
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--c-pink-700);
+  background: var(--c-pink-50);
+  border-radius: var(--radius-pill);
+  transition: background var(--transition), color var(--transition);
+}
+
+.wordsearch-word-list li[data-found="true"] {
+  color: var(--c-ink-faint);
+  background: var(--c-surface-alt);
+  text-decoration: line-through;
+}
+
+.wordsearch-actions {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.wordsearch-win {
+  margin-top: var(--sp-4);
+  text-align: center;
+}
+
+.wordsearch-win-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.wordsearch-win-time {
+  margin-top: var(--sp-2);
+  color: var(--c-ink-soft);
+}

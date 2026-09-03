@@ -1,0 +1,53 @@
+.friends-my-code {
+  margin-top: var(--sp-4);
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+  text-align: center;
+}
+
+.friends-add-form {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.friends-list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: var(--sp-6) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.friends-empty {
+  padding: var(--sp-4);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+}
+
+.friends-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--c-surface-alt);
+  border-radius: var(--radius-md);
+}
+
+.friends-row > div {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.friends-row-nick {
+  flex: 1;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+/* Los botones dentro de una fila no deben ocupar el 100% (comportamiento por
+   defecto de .btn): aqui conviven con el avatar y el nick. */
+.friends-row .btn {
+  width: auto;
+}

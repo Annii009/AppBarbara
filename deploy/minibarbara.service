@@ -1,0 +1,22 @@
+[Unit]
+Description=miniBarbara API
+After=network.target
+
+[Service]
+Type=simple
+User=minibarbara
+WorkingDirectory=/opt/minibarbara/packages/server
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/npx tsx --env-file-if-exists=.env src/index.ts
+Restart=on-failure
+RestartSec=5
+
+# El servicio no necesita mas permisos que leer/escribir su propia carpeta de
+# datos: si algun dia hay un fallo de seguridad en una dependencia, esto
+# limita lo que puede tocar.
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/minibarbara/packages/server/data
+
+[Install]
+WantedBy=multi-user.target

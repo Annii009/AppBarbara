@@ -1,0 +1,30 @@
+.simon-board {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.simon-button {
+  aspect-ratio: 1;
+  background: var(--btn-color);
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  opacity: 0.75;
+  transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.simon-button:not(:disabled):hover {
+  opacity: 0.9;
+}
+
+.simon-button[data-active="true"] {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.simon-button:disabled {
+  cursor: not-allowed;
+}

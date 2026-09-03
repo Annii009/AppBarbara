@@ -1,0 +1,42 @@
+.twenty48-intro {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.twenty48-intro-text {
+  font-size: var(--text-sm);
+  color: var(--c-ink-soft);
+  text-align: center;
+}
+
+.twenty48-wrapper {
+  outline: none;
+}
+
+.twenty48-actions {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.twenty48-win {
+  margin-top: var(--sp-4);
+  text-align: center;
+}
+
+.twenty48-win-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.twenty48-win-time {
+  margin-top: var(--sp-2);
+  color: var(--c-ink-soft);
+}

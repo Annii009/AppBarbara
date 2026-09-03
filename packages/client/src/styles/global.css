@@ -1,0 +1,73 @@
+@import "./tokens.css";
+
+/* Reset minimo: solo lo que de verdad estorba, sin librerias externas. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--c-ink);
+  background: var(--bg-app);
+  background-attachment: fixed;
+  /* Suaviza el render de la tipografia redondeada en pantallas normales. */
+  -webkit-font-smoothing: antialiased;
+  /* Evita el rebote horizontal en movil. */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--c-pink-700);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Foco visible y coherente en toda la app. Quitar el outline sin sustituirlo
+   deja la app inutilizable con teclado, asi que lo reemplazamos por un anillo
+   rosa que encaja con el tema. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-glow);
+  border-radius: var(--radius-sm);
+}
+
+/* Respeta a quien tenga activado "reducir movimiento" en su sistema. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

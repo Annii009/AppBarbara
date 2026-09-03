@@ -1,0 +1,47 @@
+.daily-reminder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-4) 0;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-gold);
+  border-radius: var(--radius-md);
+  color: #4a2f06;
+  box-shadow: var(--shadow-sm);
+}
+
+.daily-reminder-text {
+  font-size: var(--text-sm);
+}
+
+.daily-reminder-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.daily-reminder-play,
+.daily-reminder-notify {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--c-pink-700);
+  background: rgba(255, 255, 255, 0.75);
+  border: none;
+  border-radius: var(--radius-pill);
+  transition: background var(--transition);
+}
+
+.daily-reminder-play:hover,
+.daily-reminder-notify:hover {
+  background: #fff;
+}
+
+.daily-reminder-notify {
+  background: rgba(255, 255, 255, 0.45);
+}

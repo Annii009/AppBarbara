@@ -1,0 +1,24 @@
+{
+  "name": "minibarbara",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently --raw \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm run dev --workspace @minibarbara/server",
+    "dev:client": "npm run dev --workspace @minibarbara/client",
+    "build": "npm run build --workspace @minibarbara/client",
+    "typecheck": "tsc --noEmit -p packages/shared && tsc --noEmit -p packages/games && tsc --noEmit -p packages/server && tsc --noEmit -p packages/client",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
