@@ -20,7 +20,7 @@ function cellKey(row: number, col: number): string {
 
 interface DailySudokuPlayProps {
   gameDay: string;
-  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs">) => void;
+  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs" | "gameId">) => void;
 }
 
 export function DailySudokuPlay({ gameDay, onComplete }: DailySudokuPlayProps): React.JSX.Element {

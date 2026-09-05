@@ -1,0 +1,45 @@
+.trivia-card {
+  margin: var(--sp-4) 0;
+  text-align: left;
+}
+
+.trivia-question {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--c-ink);
+  text-align: center;
+}
+
+.trivia-options {
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.trivia-option {
+  padding: var(--sp-3) var(--sp-4);
+  font: inherit;
+  font-weight: 700;
+  color: var(--c-ink);
+  text-align: left;
+  background: var(--c-surface-alt);
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.trivia-option:disabled {
+  cursor: default;
+}
+
+.trivia-option[data-state="correct"] {
+  color: var(--c-surface);
+  background: var(--c-success);
+  border-color: var(--c-success);
+}
+
+.trivia-option[data-state="wrong"] {
+  color: var(--c-surface);
+  background: var(--c-danger);
+  border-color: var(--c-danger);
+}

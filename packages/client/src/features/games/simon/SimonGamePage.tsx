@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PartyPopper } from "lucide-react";
 import {
   countCorrectPrefix,
@@ -9,7 +9,6 @@ import {
 } from "@minibarbara/games";
 import { GlamCard } from "../../../components/GlamCard.tsx";
 import { Button } from "../../../components/Button.tsx";
-import { mapApi } from "../../map/map-api.ts";
 import { SimonBoard } from "./SimonBoard.tsx";
 import "./SimonGamePage.css";
 
@@ -27,15 +26,12 @@ function formatElapsed(ms: number): string {
 }
 
 /**
- * Secuencia (al estilo Simon): repetir una secuencia de colores que crece
- * una posicion cada ronda, desde el principio cada vez. Practica libre y
- * modo mapa como el resto de juegos (ver la nota en SudokuGamePage.tsx).
+ * Secuencia (al estilo Simon) en practica libre: repetir una secuencia de
+ * colores que crece una posicion cada ronda, desde el principio cada vez.
+ * Ver la nota de alcance equivalente en SudokuGamePage.tsx.
  */
 export function SimonGamePage(): React.JSX.Element {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const nodeId = searchParams.get("node");
-  const isNodeMode = nodeId !== null;
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [target, setTarget] = useState<SimonButton[]>([]);
@@ -46,7 +42,6 @@ export function SimonGamePage(): React.JSX.Element {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [nodeReported, setNodeReported] = useState(false);
   const timeouts = useRef<number[]>([]);
 
   useEffect(() => {
@@ -91,23 +86,8 @@ export function SimonGamePage(): React.JSX.Element {
     setFinishedAt(null);
     setStartedAt(Date.now());
     setNow(Date.now());
-    setNodeReported(false);
     playSequence(sequence.slice(0, 1));
   }
-
-  useEffect(() => {
-    if (isNodeMode && phase === "idle") startGame();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNodeMode]);
-
-  useEffect(() => {
-    if (finishedAt && nodeId && !nodeReported) {
-      setNodeReported(true);
-      mapApi.completeNode(nodeId).catch((error: unknown) => {
-        console.error("[map] no se pudo guardar el progreso de este nivel:", error);
-      });
-    }
-  }, [finishedAt, nodeId, nodeReported]);
 
   function handlePress(button: SimonButton): void {
     if (phase !== "input") return;
@@ -140,7 +120,7 @@ export function SimonGamePage(): React.JSX.Element {
     }, NEXT_ROUND_DELAY_MS);
   }
 
-  if (!isNodeMode && phase === "idle") {
+  if (phase === "idle") {
     return (
       <GlamCard eyebrow="Minijuego" title="Secuencia">
         <div className="simon-intro">
@@ -157,10 +137,6 @@ export function SimonGamePage(): React.JSX.Element {
     );
   }
 
-  if (phase === "idle") {
-    return <GlamCard eyebrow="Secuencia" title="Preparando…" />;
-  }
-
   const elapsedMs = (finishedAt ?? now) - (startedAt ?? now);
   const won = phase === "complete";
   const finished = phase === "gameover" || phase === "complete";
@@ -174,21 +150,10 @@ export function SimonGamePage(): React.JSX.Element {
             {won ? "¡Las 10 rondas!" : `Llegaste a la ronda ${roundsCompleted}`}
           </p>
           <div className="simon-actions">
-            {isNodeMode ? (
-              <>
-                <Button onClick={() => navigate("/map")}>Volver al mapa</Button>
-                <Button variant="ghost" onClick={startGame}>
-                  Jugar otra vez
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={startGame}>Jugar otra vez</Button>
-                <Button variant="ghost" onClick={() => navigate("/")}>
-                  Volver
-                </Button>
-              </>
-            )}
+            <Button onClick={startGame}>Jugar otra vez</Button>
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              Volver
+            </Button>
           </div>
         </div>
       ) : (

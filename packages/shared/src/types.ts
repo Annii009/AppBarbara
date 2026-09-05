@@ -7,7 +7,17 @@
  */
 
 /** Identificadores de los minijuegos. Se va ampliando fase a fase. */
-export const GAME_IDS = ["sudoku", "wordsearch", "memory", "2048", "simon"] as const;
+export const GAME_IDS = [
+  "sudoku",
+  "wordsearch",
+  "memory",
+  "2048",
+  "simon",
+  "wordguess",
+  "minesweeper",
+  "slidepuzzle",
+  "trivia",
+] as const;
 export type GameId = (typeof GAME_IDS)[number];
 
 /** Que minijuegos tienen soporte de reto diario (verificado por el
@@ -19,6 +29,10 @@ export const DAILY_GAME_IDS = [
   "memory",
   "2048",
   "simon",
+  "wordguess",
+  "minesweeper",
+  "slidepuzzle",
+  "trivia",
 ] as const satisfies readonly GameId[];
 
 /** Dificultad comun a todos los minijuegos. */
@@ -94,39 +108,36 @@ export interface HealthResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Progreso en el mapa
-// ---------------------------------------------------------------------------
-
-/** Nodos del mapa que el usuario ya ha completado. */
-export interface ProgressResponse {
-  completedNodeIds: string[];
-}
-
-export interface CompleteNodeRequest {
-  nodeId: string;
-}
-
-// ---------------------------------------------------------------------------
 // Reto diario
+//
+// Cada minijuego tiene SU PROPIO reto diario, simultaneo con los demas (no
+// uno solo que rota de juego en juego): cada uno con su propia semilla del
+// dia, su propia racha y su propio ranking entre amigas. Todos cambian a la
+// vez a medianoche UTC (ver currentGameDay en seed.ts).
 // ---------------------------------------------------------------------------
 
 export interface DailyStatus {
-  gameDay: string;
-  /** Que minijuego toca hoy: se elige deterministamente por fecha, no es
-   *  siempre el mismo (ver pickDailyGameId en seed.ts). */
   gameId: GameId;
+  gameDay: string;
   completed: boolean;
   elapsedMs: number | null;
-  /** Dias consecutivos completando el reto, contando hoy si ya esta hecho. */
+  /** Dias consecutivos completando ESTE juego, contando hoy si ya esta hecho. */
   streak: number;
 }
 
+/** El estado de los 5 retos diarios de hoy, de una vez. */
+export interface DailyStatusResponse {
+  gameDay: string;
+  statuses: DailyStatus[];
+}
+
 /**
- * Payload de completar el reto diario: el campo relevante depende de que
- * gameId toque ese dia (ver DailyStatus.gameId). El servidor sabe cual
- * espera y rechaza la peticion si falta.
+ * Payload de completar el reto diario de un juego concreto: el campo
+ * relevante depende de gameId. El servidor sabe cual espera y rechaza la
+ * peticion si falta.
  */
 export interface CompleteDailyRequest {
+  gameId: GameId;
   elapsedMs: number;
   /** sudoku: la cuadricula resuelta. */
   grid?: number[][];
@@ -138,6 +149,15 @@ export interface CompleteDailyRequest {
   moves?: string[];
   /** simon: la secuencia de botones pulsada en el intento mas largo logrado. */
   sequence?: number[];
+  /** wordguess: los intentos de palabra, de principio a fin (el ultimo debe
+   *  ser la palabra secreta para contar como completado). */
+  guesses?: string[];
+  /** minesweeper: indices (fila*columnas + columna) de todas las casillas
+   *  descubiertas al ganar. */
+  revealed?: number[];
+  /** trivia: la opcion elegida (su indice) para cada pregunta de hoy, en el
+   *  mismo orden en que se sirvieron. */
+  answers?: number[];
 }
 
 export interface LeaderboardEntry {
@@ -147,21 +167,28 @@ export interface LeaderboardEntry {
 }
 
 export interface DailyLeaderboardResponse {
+  gameId: GameId;
   gameDay: string;
   entries: LeaderboardEntry[];
 }
 
-export interface DailyHistoryEntry {
-  gameDay: string;
+/** Como fue un juego concreto en un dia concreto — una celda del historial. */
+export interface DailyHistoryGameEntry {
   gameId: GameId;
   completed: boolean;
   elapsedMs: number | null;
 }
 
-/** Los ultimos dias del reto diario, del mas reciente al mas antiguo — el
- *  "historial" tipo LinkedIn Games. */
+/** Un dia del historial, con los 5 juegos de ese dia. */
+export interface DailyHistoryDay {
+  gameDay: string;
+  games: DailyHistoryGameEntry[];
+}
+
+/** Los ultimos dias, del mas reciente al mas antiguo — el "historial" tipo
+ *  LinkedIn Games, pero con los 5 juegos de cada dia en vez de solo uno. */
 export interface DailyHistoryResponse {
-  entries: DailyHistoryEntry[];
+  days: DailyHistoryDay[];
 }
 
 // ---------------------------------------------------------------------------

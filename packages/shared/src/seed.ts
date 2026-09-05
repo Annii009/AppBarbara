@@ -12,8 +12,6 @@
  * packages/games, es un bug: el puzzle dejaria de ser reproducible.
  */
 
-import { DAILY_GAME_IDS, type GameId } from "./types.ts";
-
 /** Generador de numeros pseudoaleatorios reproducible. */
 export interface Rng {
   /** Decimal en [0, 1). */
@@ -90,18 +88,12 @@ export function currentGameDay(now: Date = new Date()): string {
   return now.toISOString().slice(0, 10);
 }
 
-/** Semilla canonica del reto diario de un juego concreto. */
+/**
+ * Semilla canonica del reto diario de un juego concreto. Cada minijuego
+ * tiene su propio reto diario simultaneo (no uno solo que rota entre
+ * juegos): esto es lo unico que hace falta para que cliente y servidor
+ * generen el mismo puzzle de cada juego, cada dia, sin coordinarse.
+ */
 export function dailySeed(gameId: string, gameDay: string): string {
   return `daily:${gameId}:${gameDay}`;
-}
-
-/**
- * Que minijuego toca de reto diario hoy: se elige deterministamente a partir
- * de la fecha, alternando entre los juegos con soporte de reto diario en vez
- * de ser siempre el mismo. Cliente y servidor llaman a esta misma funcion,
- * asi que siempre coinciden sin necesidad de que el servidor le diga nada al
- * cliente por adelantado.
- */
-export function pickDailyGameId(gameDay: string): GameId {
-  return createRng(`daily-game-picker:${gameDay}`).pick(DAILY_GAME_IDS);
 }

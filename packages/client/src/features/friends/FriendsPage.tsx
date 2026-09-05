@@ -79,7 +79,7 @@ export function FriendsPage(): React.JSX.Element {
       </ul>
 
       <Button variant="ghost" onClick={() => navigate("/")}>
-        Volver al mapa
+        Volver al inicio
       </Button>
     </GlamCard>
   );

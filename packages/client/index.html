@@ -7,6 +7,16 @@
     <meta name="description" content="miniBarbara: un mundo de minijuegos con reto diario." />
     <title>miniBarbara</title>
 
+    <!-- PWA: esto es lo que hace que "Anadir a pantalla de inicio" en el
+         movil cree un icono y abra la app a pantalla completa, sin barra de
+         navegador, en vez de una pestana normal. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="miniBarbara" />
+
     <!-- Google Fonts: Fredoka y Quicksand son de licencia libre (OFL) y se
          sirven sin coste ni limite. preconnect acelera la primera carga. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

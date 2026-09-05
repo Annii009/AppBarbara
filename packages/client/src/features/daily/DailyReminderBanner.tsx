@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
-import type { DailyStatus } from "@minibarbara/shared";
+import type { DailyStatusResponse } from "@minibarbara/shared";
 import { dailyApi } from "./daily-api.ts";
 import "./DailyReminderBanner.css";
 
 /**
- * Recordatorio del reto diario, en dos niveles:
- *  1. Un banner en el mapa, siempre que el reto de hoy siga sin hacer.
+ * Recordatorio de los retos diarios pendientes, en dos niveles:
+ *  1. Un banner en el inicio, mientras quede al menos uno de los 5 retos sin
+ *     hacer hoy.
  *  2. Opcionalmente, una notificacion del navegador (Web Notification API,
  *     gratis, sin servicio externo) si la usuaria da permiso explicito.
  *
@@ -24,9 +24,12 @@ function canUseNotifications(): boolean {
   return typeof window !== "undefined" && "Notification" in window;
 }
 
-export function DailyReminderBanner(): React.JSX.Element | null {
-  const navigate = useNavigate();
-  const [status, setStatus] = useState<DailyStatus | null>(null);
+interface DailyReminderBannerProps {
+  onPlay: () => void;
+}
+
+export function DailyReminderBanner({ onPlay }: DailyReminderBannerProps): React.JSX.Element | null {
+  const [status, setStatus] = useState<DailyStatusResponse | null>(null);
   const [notifsEnabled, setNotifsEnabled] = useState(
     () => canUseNotifications() && Notification.permission === "granted",
   );
@@ -38,8 +41,11 @@ export function DailyReminderBanner(): React.JSX.Element | null {
       .catch(() => setStatus(null));
   }, []);
 
+  const pendingCount = status?.statuses.filter((s) => !s.completed).length ?? 0;
+  const bestStreak = status ? Math.max(0, ...status.statuses.map((s) => s.streak)) : 0;
+
   useEffect(() => {
-    if (!status || status.completed || !notifsEnabled) return;
+    if (!status || pendingCount === 0 || !notifsEnabled) return;
 
     // Como mucho un aviso por dia, aunque se recargue la pagina varias veces.
     try {
@@ -51,9 +57,12 @@ export function DailyReminderBanner(): React.JSX.Element | null {
     }
 
     new Notification("miniBarbara", {
-      body: "Tu reto diario todavia te espera. ¡No pierdas la racha!",
+      body:
+        pendingCount === 1
+          ? "Todavia te queda un reto diario. ¡No pierdas la racha!"
+          : `Todavia te quedan ${pendingCount} retos diarios. ¡No pierdas la racha!`,
     });
-  }, [status, notifsEnabled]);
+  }, [status, pendingCount, notifsEnabled]);
 
   async function enableNotifications(): Promise<void> {
     if (!canUseNotifications()) return;
@@ -61,21 +70,25 @@ export function DailyReminderBanner(): React.JSX.Element | null {
     setNotifsEnabled(permission === "granted");
   }
 
-  if (!status || status.completed) return null;
+  if (!status || pendingCount === 0) return null;
 
   return (
     <div className="daily-reminder">
       <div className="daily-reminder-text">
-        <strong>¡Tu reto diario te espera!</strong>
-        {status.streak > 0 && (
+        <strong>
+          {pendingCount === 1
+            ? "¡Te queda un reto diario!"
+            : `¡Te quedan ${pendingCount} retos diarios!`}
+        </strong>
+        {bestStreak > 0 && (
           <span>
             {" "}
-            Llevas {status.streak} {status.streak === 1 ? "dia" : "dias"} seguidos.
+            Tu mejor racha ahora mismo es de {bestStreak} {bestStreak === 1 ? "dia" : "dias"}.
           </span>
         )}
       </div>
       <div className="daily-reminder-actions">
-        <button type="button" className="daily-reminder-play" onClick={() => navigate("/daily")}>
+        <button type="button" className="daily-reminder-play" onClick={onPlay}>
           Jugar ahora
         </button>
         {canUseNotifications() && !notifsEnabled && Notification.permission !== "denied" && (

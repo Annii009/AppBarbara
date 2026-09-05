@@ -1,0 +1,42 @@
+.wordguess-board {
+  display: grid;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0;
+}
+
+.wordguess-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-2);
+}
+
+.wordguess-tile {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--c-ink);
+  background: var(--c-surface-alt);
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.wordguess-tile[data-status="correct"] {
+  color: var(--c-surface);
+  background: var(--c-success);
+  border-color: var(--c-success);
+}
+
+.wordguess-tile[data-status="present"] {
+  color: var(--c-surface);
+  background: var(--c-gold-500);
+  border-color: var(--c-gold-500);
+}
+
+.wordguess-tile[data-status="absent"] {
+  color: var(--c-ink-faint);
+  background: var(--c-surface-alt);
+  border-color: var(--c-border);
+}

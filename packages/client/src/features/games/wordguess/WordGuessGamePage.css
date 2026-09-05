@@ -1,0 +1,43 @@
+.wordguess-intro {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.wordguess-intro-text {
+  color: var(--c-ink-soft);
+}
+
+.wordguess-form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+}
+
+.wordguess-form .field {
+  flex: 1;
+}
+
+.wordguess-win {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  text-align: center;
+}
+
+.wordguess-win-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.wordguess-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}

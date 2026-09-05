@@ -1,0 +1,80 @@
+.daily-history-loading {
+  margin-top: var(--sp-6);
+  text-align: center;
+  color: var(--c-ink-soft);
+}
+
+.daily-history-days {
+  display: grid;
+  gap: var(--sp-4);
+  margin: var(--sp-6) 0;
+  padding: 0;
+  list-style: none;
+  max-height: 28rem;
+  overflow-y: auto;
+}
+
+.daily-history-day {
+  text-align: left;
+}
+
+.daily-history-day-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--sp-1);
+  padding: 0 var(--sp-1);
+}
+
+.daily-history-date {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.daily-history-day-count {
+  font-size: var(--text-xs);
+  color: var(--c-ink-soft);
+}
+
+.daily-history-list {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.daily-history-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm);
+  background: var(--c-surface-alt);
+  border-radius: var(--radius-md);
+}
+
+.daily-history-row[data-completed="true"] {
+  background: color-mix(in srgb, var(--c-mint) 30%, var(--c-surface));
+}
+
+.daily-history-game {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.daily-history-result {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.daily-history-row[data-completed="false"] .daily-history-result {
+  color: var(--c-ink-faint);
+  font-weight: 400;
+}

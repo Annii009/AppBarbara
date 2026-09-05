@@ -1,0 +1,27 @@
+.games-hub-list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: var(--sp-6) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.games-hub-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  font: inherit;
+  font-weight: 700;
+  color: var(--c-ink);
+  background: var(--c-surface-alt);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: box-shadow var(--transition);
+}
+
+.games-hub-row:hover {
+  box-shadow: var(--shadow-sm);
+}

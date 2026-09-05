@@ -6,7 +6,6 @@ import { env } from "./config/env.ts";
 import { healthRouter } from "./modules/health/health.routes.ts";
 import { authRouter } from "./modules/auth/auth.routes.ts";
 import { avatarRouter } from "./modules/avatar/avatar.routes.ts";
-import { progressRouter } from "./modules/progress/progress.routes.ts";
 import { dailyRouter } from "./modules/daily/daily.routes.ts";
 import { friendsRouter } from "./modules/friends/friends.routes.ts";
 import { chatRouter } from "./modules/chat/chat.routes.ts";
@@ -43,7 +42,6 @@ export function createApp(): Express {
   app.use(API_BASE_PATH, healthRouter);
   app.use(API_BASE_PATH, authRouter);
   app.use(API_BASE_PATH, avatarRouter);
-  app.use(API_BASE_PATH, progressRouter);
   app.use(API_BASE_PATH, dailyRouter);
   app.use(API_BASE_PATH, friendsRouter);
   app.use(API_BASE_PATH, chatRouter);

@@ -29,7 +29,7 @@ const KEY_TO_DIRECTION: Record<string, Direction> = {
 
 interface DailyTwenty48PlayProps {
   gameDay: string;
-  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs">) => void;
+  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs" | "gameId">) => void;
 }
 
 /**

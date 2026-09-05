@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PartyPopper } from "lucide-react";
 import {
   generateMemoryPuzzle,
@@ -10,17 +10,11 @@ import {
 } from "@minibarbara/games";
 import { GlamCard } from "../../../components/GlamCard.tsx";
 import { Button } from "../../../components/Button.tsx";
-import { mapApi } from "../../map/map-api.ts";
 import { MemoryBoard } from "./MemoryBoard.tsx";
 import "./MemoryGamePage.css";
 
-/**
- * Memorama: encontrar las parejas de cartas. Igual que sudoku y sopa de
- * letras, funciona en dos modos (practica libre con picker de dificultad, o
- * modo mapa con la dificultad ya fijada) y se genera/valida enteramente en
- * el navegador — ver la nota de alcance en SudokuGamePage.tsx, aplica igual
- * aqui: sin ranking que proteger todavia.
- */
+/** Memorama en practica libre: picker de dificultad, se puede repetir sin
+ *  limite. Ver la nota de alcance equivalente en SudokuGamePage.tsx. */
 
 type MemoryDifficulty = "easy" | "medium" | "hard";
 
@@ -37,7 +31,6 @@ const DIFFICULTY_LABELS: Record<MemoryDifficulty, string> = {
 };
 
 const MISMATCH_DELAY_MS = 900;
-const NODE_MODE_PAIR_COUNT = 8;
 
 function formatElapsed(ms: number): string {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
@@ -48,9 +41,6 @@ function formatElapsed(ms: number): string {
 
 export function MemoryGamePage(): React.JSX.Element {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const nodeId = searchParams.get("node");
-  const isNodeMode = nodeId !== null;
 
   const [difficulty, setDifficulty] = useState<MemoryDifficulty | null>(null);
   const [puzzle, setPuzzle] = useState<MemoryPuzzle | null>(null);
@@ -61,7 +51,6 @@ export function MemoryGamePage(): React.JSX.Element {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [nodeReported, setNodeReported] = useState(false);
   const checkTimeout = useRef<number | null>(null);
 
   useEffect(() => {
@@ -87,29 +76,7 @@ export function MemoryGamePage(): React.JSX.Element {
     setFinishedAt(null);
     setStartedAt(Date.now());
     setNow(Date.now());
-    setNodeReported(false);
   }
-
-  // Modo mapa: arranca sola, sin picker de dificultad que mostrar.
-  useEffect(() => {
-    if (isNodeMode && !puzzle) {
-      const seed = crypto.randomUUID();
-      setDifficulty("medium");
-      setPuzzle(generateMemoryPuzzle(seed, NODE_MODE_PAIR_COUNT));
-      setStartedAt(Date.now());
-      setNow(Date.now());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNodeMode]);
-
-  useEffect(() => {
-    if (finishedAt && nodeId && !nodeReported) {
-      setNodeReported(true);
-      mapApi.completeNode(nodeId).catch((error: unknown) => {
-        console.error("[map] no se pudo guardar el progreso de este nivel:", error);
-      });
-    }
-  }, [finishedAt, nodeId, nodeReported]);
 
   const matchedCount = useMemo(() => matchedIds.size / 2, [matchedIds]);
   const totalPairs = puzzle ? puzzle.cards.length / 2 : 0;
@@ -149,7 +116,7 @@ export function MemoryGamePage(): React.JSX.Element {
     }
   }
 
-  if (!isNodeMode && (!difficulty || !puzzle)) {
+  if (!difficulty || !puzzle) {
     return (
       <GlamCard eyebrow="Minijuego" title="Memorama">
         <div className="memory-difficulty-picker">
@@ -167,10 +134,6 @@ export function MemoryGamePage(): React.JSX.Element {
     );
   }
 
-  if (!difficulty || !puzzle) {
-    return <GlamCard eyebrow="Memorama" title="Preparando…" />;
-  }
-
   const elapsedMs = (finishedAt ?? now) - (startedAt ?? now);
 
   return (
@@ -184,21 +147,10 @@ export function MemoryGamePage(): React.JSX.Element {
             Tiempo: {formatElapsed(finishedAt - startedAt)} · {moves} intentos
           </p>
           <div className="memory-actions">
-            {isNodeMode ? (
-              <>
-                <Button onClick={() => navigate("/map")}>Volver al mapa</Button>
-                <Button variant="ghost" onClick={() => startGame(difficulty)}>
-                  Jugar otra vez
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={() => startGame(difficulty)}>Jugar otra vez</Button>
-                <Button variant="ghost" onClick={() => setDifficulty(null)}>
-                  Cambiar dificultad
-                </Button>
-              </>
-            )}
+            <Button onClick={() => startGame(difficulty)}>Jugar otra vez</Button>
+            <Button variant="ghost" onClick={() => setDifficulty(null)}>
+              Cambiar dificultad
+            </Button>
           </div>
         </div>
       ) : (
@@ -214,11 +166,8 @@ export function MemoryGamePage(): React.JSX.Element {
             disabled={isChecking}
           />
           <div className="memory-actions">
-            <Button
-              variant="ghost"
-              onClick={() => (isNodeMode ? navigate("/map") : setDifficulty(null))}
-            >
-              {isNodeMode ? "Volver al mapa" : "Cambiar dificultad"}
+            <Button variant="ghost" onClick={() => setDifficulty(null)}>
+              Cambiar dificultad
             </Button>
           </div>
         </>

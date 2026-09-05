@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PartyPopper } from "lucide-react";
 import {
   applyMove,
@@ -14,7 +14,6 @@ import {
 import type { Rng } from "@minibarbara/shared";
 import { GlamCard } from "../../../components/GlamCard.tsx";
 import { Button } from "../../../components/Button.tsx";
-import { mapApi } from "../../map/map-api.ts";
 import { TwentyFortyEightBoard } from "./TwentyFortyEightBoard.tsx";
 import "./TwentyFortyEightGamePage.css";
 
@@ -37,16 +36,11 @@ function formatElapsed(ms: number): string {
 }
 
 /**
- * 2048: junta fichas iguales hasta quedarte sin movimientos. Practica libre
- * y modo mapa (mismo patron que el resto, ver la nota en SudokuGamePage.tsx).
- * La partida diaria (con envio de la partida al servidor para verificarla de
- * verdad) vive en DailyChallengePage, no aqui.
+ * 2048 en practica libre: se puede repetir sin limite. Ver la nota de
+ * alcance equivalente en SudokuGamePage.tsx.
  */
 export function TwentyFortyEightGamePage(): React.JSX.Element {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const nodeId = searchParams.get("node");
-  const isNodeMode = nodeId !== null;
 
   const [started, setStarted] = useState(false);
   const [grid, setGrid] = useState<Grid2048 | null>(null);
@@ -54,7 +48,6 @@ export function TwentyFortyEightGamePage(): React.JSX.Element {
   const [gameOver, setGameOver] = useState(false);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [nodeReported, setNodeReported] = useState(false);
   const rngRef = useRef<Rng | null>(null);
 
   useEffect(() => {
@@ -73,22 +66,7 @@ export function TwentyFortyEightGamePage(): React.JSX.Element {
     setStarted(true);
     setStartedAt(Date.now());
     setNow(Date.now());
-    setNodeReported(false);
   }
-
-  useEffect(() => {
-    if (isNodeMode && !started) startGame();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNodeMode]);
-
-  useEffect(() => {
-    if (gameOver && nodeId && !nodeReported) {
-      setNodeReported(true);
-      mapApi.completeNode(nodeId).catch((error: unknown) => {
-        console.error("[map] no se pudo guardar el progreso de este nivel:", error);
-      });
-    }
-  }, [gameOver, nodeId, nodeReported]);
 
   function handleMove(direction: Direction): void {
     if (!grid || !rngRef.current || gameOver) return;
@@ -109,7 +87,7 @@ export function TwentyFortyEightGamePage(): React.JSX.Element {
     }
   }
 
-  if (!isNodeMode && !started) {
+  if (!started) {
     return (
       <GlamCard eyebrow="Minijuego" title="2048">
         <div className="twenty48-intro">
@@ -146,21 +124,10 @@ export function TwentyFortyEightGamePage(): React.JSX.Element {
             Puntuacion: {score} · Ficha maxima: {maxTile}
           </p>
           <div className="twenty48-actions">
-            {isNodeMode ? (
-              <>
-                <Button onClick={() => navigate("/map")}>Volver al mapa</Button>
-                <Button variant="ghost" onClick={startGame}>
-                  Jugar otra vez
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={startGame}>Jugar otra vez</Button>
-                <Button variant="ghost" onClick={() => navigate("/")}>
-                  Volver
-                </Button>
-              </>
-            )}
+            <Button onClick={startGame}>Jugar otra vez</Button>
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              Volver
+            </Button>
           </div>
         </div>
       ) : (
@@ -170,11 +137,8 @@ export function TwentyFortyEightGamePage(): React.JSX.Element {
             <TwentyFortyEightBoard grid={grid} onMove={handleMove} />
           </div>
           <div className="twenty48-actions">
-            <Button
-              variant="ghost"
-              onClick={() => (isNodeMode ? navigate("/map") : navigate("/"))}
-            >
-              {isNodeMode ? "Volver al mapa" : "Salir"}
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              Salir
             </Button>
           </div>
         </>

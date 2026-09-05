@@ -17,7 +17,7 @@ function cellKey(pos: GridPosition): string {
 
 interface DailyWordSearchPlayProps {
   gameDay: string;
-  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs">) => void;
+  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs" | "gameId">) => void;
 }
 
 export function DailyWordSearchPlay({ gameDay, onComplete }: DailyWordSearchPlayProps): React.JSX.Element {

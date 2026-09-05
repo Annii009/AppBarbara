@@ -101,7 +101,7 @@ export function AvatarEditorPage(): React.JSX.Element | null {
   return (
     <GlamCard eyebrow="Personaliza" title="Crea tu avatar" maxWidth="24rem">
       <div className="avatar-editor">
-        <AvatarRenderer avatar={draft} size={150} variant="full" />
+        <AvatarRenderer avatar={draft} size={160} />
 
         <div className="avatar-editor-wardrobe" role="tablist" aria-label="Categorias del armario">
           {CATEGORIES.map((category) => {

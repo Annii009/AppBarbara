@@ -14,7 +14,7 @@ const MISMATCH_DELAY_MS = 900;
 
 interface DailyMemoryPlayProps {
   gameDay: string;
-  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs">) => void;
+  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs" | "gameId">) => void;
 }
 
 export function DailyMemoryPlay({ gameDay, onComplete }: DailyMemoryPlayProps): React.JSX.Element {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PartyPopper } from "lucide-react";
 import {
   cellsForPlacement,
@@ -12,15 +12,11 @@ import {
 } from "@minibarbara/games";
 import { GlamCard } from "../../../components/GlamCard.tsx";
 import { Button } from "../../../components/Button.tsx";
-import { mapApi } from "../../map/map-api.ts";
 import { WordSearchBoard } from "./WordSearchBoard.tsx";
 import "./WordSearchGamePage.css";
 
-/**
- * Sopa de letras, en dos modos: practica libre (picker de tema) o modo mapa
- * (?node=<id>&theme=<id>, llega ya con el tema fijado). Ver la nota
- * equivalente y mas detallada en SudokuGamePage.tsx: aplica igual aqui.
- */
+/** Sopa de letras en practica libre: picker de tema, se puede repetir sin
+ *  limite. Ver la nota de alcance equivalente en SudokuGamePage.tsx. */
 
 function cellKey(pos: GridPosition): string {
   return `${pos.row}-${pos.col}`;
@@ -35,11 +31,6 @@ function formatElapsed(ms: number): string {
 
 export function WordSearchGamePage(): React.JSX.Element {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const nodeId = searchParams.get("node");
-  const nodeThemeId = searchParams.get("theme");
-  const isNodeMode = nodeId !== null;
 
   const [theme, setTheme] = useState<WordSearchTheme | null>(null);
   const [puzzle, setPuzzle] = useState<WordSearchPuzzle | null>(null);
@@ -47,7 +38,6 @@ export function WordSearchGamePage(): React.JSX.Element {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [nodeReported, setNodeReported] = useState(false);
 
   useEffect(() => {
     if (!startedAt || finishedAt) return;
@@ -65,25 +55,7 @@ export function WordSearchGamePage(): React.JSX.Element {
     setFinishedAt(null);
     setStartedAt(Date.now());
     setNow(Date.now());
-    setNodeReported(false);
   }
-
-  useEffect(() => {
-    if (isNodeMode && !puzzle) {
-      const match = WORD_SEARCH_THEMES.find((t) => t.id === nodeThemeId) ?? WORD_SEARCH_THEMES[0];
-      if (match) startGame(match);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNodeMode]);
-
-  useEffect(() => {
-    if (finishedAt && nodeId && !nodeReported) {
-      setNodeReported(true);
-      mapApi.completeNode(nodeId).catch((error: unknown) => {
-        console.error("[map] no se pudo guardar el progreso de este nivel:", error);
-      });
-    }
-  }, [finishedAt, nodeId, nodeReported]);
 
   const foundCells = useMemo(() => {
     const cells = new Set<string>();
@@ -110,7 +82,7 @@ export function WordSearchGamePage(): React.JSX.Element {
     }
   }
 
-  if (!isNodeMode && (!theme || !puzzle)) {
+  if (!theme || !puzzle) {
     return (
       <GlamCard eyebrow="Minijuego" title="Sopa de letras">
         <div className="wordsearch-theme-picker">
@@ -128,10 +100,6 @@ export function WordSearchGamePage(): React.JSX.Element {
     );
   }
 
-  if (!theme || !puzzle) {
-    return <GlamCard eyebrow="Sopa de letras" title="Preparando…" />;
-  }
-
   const elapsedMs = (finishedAt ?? now) - (startedAt ?? now);
 
   return (
@@ -146,21 +114,10 @@ export function WordSearchGamePage(): React.JSX.Element {
           </p>
           <p className="wordsearch-win-time">Tiempo: {formatElapsed(finishedAt - startedAt)}</p>
           <div className="wordsearch-actions">
-            {isNodeMode ? (
-              <>
-                <Button onClick={() => navigate("/map")}>Volver al mapa</Button>
-                <Button variant="ghost" onClick={() => startGame(theme)}>
-                  Jugar otra vez
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={() => startGame(theme)}>Jugar otra vez</Button>
-                <Button variant="ghost" onClick={() => setTheme(null)}>
-                  Cambiar tema
-                </Button>
-              </>
-            )}
+            <Button onClick={() => startGame(theme)}>Jugar otra vez</Button>
+            <Button variant="ghost" onClick={() => setTheme(null)}>
+              Cambiar tema
+            </Button>
           </div>
         </div>
       ) : (
@@ -176,11 +133,8 @@ export function WordSearchGamePage(): React.JSX.Element {
           </ul>
 
           <div className="wordsearch-actions">
-            <Button
-              variant="ghost"
-              onClick={() => (isNodeMode ? navigate("/map") : setTheme(null))}
-            >
-              {isNodeMode ? "Volver al mapa" : "Cambiar tema"}
+            <Button variant="ghost" onClick={() => setTheme(null)}>
+              Cambiar tema
             </Button>
           </div>
         </>

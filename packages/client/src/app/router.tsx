@@ -7,13 +7,19 @@ import { RegisterPage } from "../features/auth/RegisterPage.tsx";
 import { AvatarEditorPage } from "../features/avatar/AvatarEditorPage.tsx";
 import { ChatPage } from "../features/chat/ChatPage.tsx";
 import { DailyChallengePage } from "../features/daily/DailyChallengePage.tsx";
+import { DailyHistoryPage } from "../features/daily/DailyHistoryPage.tsx";
+import { DailyHubPage } from "../features/daily/DailyHubPage.tsx";
 import { FriendsPage } from "../features/friends/FriendsPage.tsx";
+import { GamesHubPage } from "../features/games/GamesHubPage.tsx";
 import { MemoryGamePage } from "../features/games/memory/MemoryGamePage.tsx";
+import { MinesweeperGamePage } from "../features/games/minesweeper/MinesweeperGamePage.tsx";
 import { SimonGamePage } from "../features/games/simon/SimonGamePage.tsx";
+import { SlidePuzzleGamePage } from "../features/games/slidepuzzle/SlidePuzzleGamePage.tsx";
 import { SudokuGamePage } from "../features/games/sudoku/SudokuGamePage.tsx";
+import { TriviaGamePage } from "../features/games/trivia/TriviaGamePage.tsx";
 import { TwentyFortyEightGamePage } from "../features/games/twenty48/TwentyFortyEightGamePage.tsx";
+import { WordGuessGamePage } from "../features/games/wordguess/WordGuessGamePage.tsx";
 import { WordSearchGamePage } from "../features/games/wordsearch/WordSearchGamePage.tsx";
-import { WorldMapPage } from "../features/map/WorldMapPage.tsx";
 
 function LoadingScreen(): React.JSX.Element {
   return <GlamCard eyebrow="Un momento" title="Cargando…" />;
@@ -59,23 +65,23 @@ export function AppRouter(): React.JSX.Element {
           path="/"
           element={
             <RequireAuth>
-              <WorldMapPage />
+              <DailyHubPage />
             </RequireAuth>
           }
         />
         <Route
-          path="/map"
-          element={
-            <RequireAuth>
-              <WorldMapPage />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/daily"
+          path="/daily/:gameId"
           element={
             <RequireAuth>
               <DailyChallengePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/daily/history"
+          element={
+            <RequireAuth>
+              <DailyHistoryPage />
             </RequireAuth>
           }
         />
@@ -100,6 +106,14 @@ export function AppRouter(): React.JSX.Element {
           element={
             <RequireAuth>
               <ChatPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/games"
+          element={
+            <RequireAuth>
+              <GamesHubPage />
             </RequireAuth>
           }
         />
@@ -140,6 +154,38 @@ export function AppRouter(): React.JSX.Element {
           element={
             <RequireAuth>
               <SimonGamePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/games/wordguess"
+          element={
+            <RequireAuth>
+              <WordGuessGamePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/games/minesweeper"
+          element={
+            <RequireAuth>
+              <MinesweeperGamePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/games/slidepuzzle"
+          element={
+            <RequireAuth>
+              <SlidePuzzleGamePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/games/trivia"
+          element={
+            <RequireAuth>
+              <TriviaGamePage />
             </RequireAuth>
           }
         />

@@ -1,0 +1,31 @@
+.slidepuzzle-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+  margin: var(--sp-4) auto;
+  max-width: 18rem;
+}
+
+.slidepuzzle-tile {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--c-surface);
+  background: var(--bg-brand);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.slidepuzzle-tile:disabled:not([data-blank="true"]) {
+  cursor: default;
+}
+
+.slidepuzzle-tile[data-blank="true"] {
+  background: transparent;
+  box-shadow: none;
+  cursor: default;
+}

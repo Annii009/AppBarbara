@@ -3,3 +3,7 @@ export * from "./wordsearch/index.ts";
 export * from "./memory/index.ts";
 export * from "./twenty48/index.ts";
 export * from "./simon/index.ts";
+export * from "./wordguess/index.ts";
+export * from "./minesweeper/index.ts";
+export * from "./slidepuzzle/index.ts";
+export * from "./trivia/index.ts";

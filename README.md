@@ -1,8 +1,8 @@
 # miniBarbara
 
-Un mundo de minijuegos con estetica glam: avatar propio, un camino de niveles
-con hilo narrativo, casa decorable y un reto nuevo cada dia, con ranking entre
-amigas.
+Minijuegos con estetica glam y rosa: avatar propio, amigas por codigo, y un
+reto diario por cada minijuego (con su propia racha y ranking), mas una
+seccion de practica libre para jugar sin limite a cualquier hora.
 
 Todo el proyecto usa unicamente herramientas de codigo abierto y gratuitas.
 En desarrollo no depende de ningun servicio externo: base de datos y servidor
@@ -104,50 +104,96 @@ resto al azar; dos temas por ahora (moda, ciudades). Interaccion por arrastre
 unificada para raton y tactil con la Pointer Events API.
 
 **Memorama** (`packages/games/src/memory/`): 12 simbolos posibles, 6/8/10
-parejas segun dificultad, barajado determinista por semilla. El clasico mas
-simple de los tres, y el mas rapido de construir. 31 tests en total entre los
-tres motores.
+parejas segun dificultad, barajado determinista por semilla.
 
-**Practica libre vs. modo mapa.** Las partidas de practica libre (picker
-dentro del propio juego) se generan y validan enteramente en el navegador:
-sin ranking que proteger todavia, no hay nada que "hacer trampa" ganaria, y
-esto las mantiene disponibles incluso sin conexion. Las partidas lanzadas
-desde una parada del mapa usan la misma logica pero, al terminar, avisan al
-servidor para desbloquear la siguiente parada (validado alli: no basta con
-decir "lo he completado", el nodo tiene que estar realmente desbloqueado).
+**2048** (`packages/games/src/twenty48/`): junto con el puzzle deslizante,
+uno de los que tiene verificacion "de verdad" en el sentido estricto — el resultado NO es publico
+de antemano (depende de que movimientos hagas), asi que el reto diario
+manda el historial completo de movimientos y el servidor repite la partida
+entera desde la semilla (`replayGame2048`) para confirmar la puntuacion.
+Objetivo diario: llegar a la ficha 512.
 
-## El mapa: "El camino de Barbara"
+**Secuencia** (`packages/games/src/simon/`, al estilo Simon): repite una
+secuencia de colores que crece una posicion cada ronda. Objetivo diario: 10
+rondas.
 
-Un camino fijo de paradas (`packages/shared/src/world-map.ts`) que hilan una
-pequena historia: Barbara abre su boutique, disena su coleccion, viaja por el
-mundo buscando inspiracion y cierra con la gran gala. Cada parada es una
-partida con dificultad o tema ya fijados; completarla desbloquea la
-siguiente. El progreso (que paradas ha completado cada usuaria) se guarda en
-el servidor (`packages/server/src/modules/progress/`), pero el catalogo del
-mapa en si es contenido estatico: anadir una parada nueva es anadir una
-entrada a la lista, no tocar la base de datos.
+**Adivina la palabra** (`packages/games/src/wordguess/`): palabra secreta de
+5 letras sacada de un catalogo cerrado (~90 palabras, sin acentos ni enes,
+igual criterio que la sopa de letras), 6 intentos, cada intento se
+compara letra a letra (verde = en su sitio, dorado = existe pero
+descolocada) con el mismo algoritmo del juego clasico, incluida la gestion
+correcta de letras repetidas. El reto diario manda el historial de
+intentos; el servidor solo exige que el ultimo sea la palabra secreta y que
+todos vengan del mismo catalogo cerrado.
 
-## Reto diario y racha
+**Buscaminas** (`packages/games/src/minesweeper/`): tablero 8x8 con 10
+minas colocadas por semilla, cascada clasica al descubrir una casilla sin
+ninguna mina alrededor. El reto diario manda la lista de casillas
+descubiertas al ganar; el servidor regenera el mismo tablero y comprueba
+que ninguna mina este entre ellas y que todo lo demas si lo este.
 
-Siempre sudoku en dificultad media, con la semilla del dia
-(`dailySeed("sudoku", gameDay)`): mismo puzzle para todo el mundo, un dia
-entero, sin guardarlo en ningun sitio. A diferencia de la practica libre,
-esta partida **si la verifica el servidor de verdad**
-(`packages/server/src/modules/daily/daily.service.ts`): regenera el mismo
-puzzle a partir de la semilla y comprueba que la cuadricula enviada resuelve
-exactamente eso, antes de contar el dia como jugado. Es el unico sitio donde
-merecia la pena esa verificacion, porque es el unico con una racha (dias
-consecutivos) que proteger.
+**Puzzle deslizante** (`packages/games/src/slidepuzzle/`, 15-puzzle
+clasico): se baraja aplicando movimientos validos al azar partiendo del
+tablero resuelto (nunca una permutacion al azar de las 16 casillas), lo
+que garantiza que siempre tiene solucion — el 15-puzzle de verdad tiene un
+problema de paridad que deja sin solucion a la mitad de las permutaciones
+posibles. El reto diario manda el historial de movimientos y el servidor
+lo reproduce desde la semilla (`replaySlidePuzzle`, mismo mecanismo que
+2048) para confirmar que de verdad queda resuelto.
 
-El icono "✨ Reto diario" es fijo en la cabecera del mapa, independiente del
-progreso — tal y como se penso desde el principio. Si el reto de hoy sigue
-sin hacer, aparece un banner con la racha actual y un boton opcional para
-activar un aviso del navegador (Web Notification API, gratis, sin servicio
-externo). Nota honesta: ese aviso solo puede saltar mientras haya una
-pestana de miniBarbara abierta; un aviso con la app cerrada del todo
-necesitaria Web Push de verdad (service worker + claves VAPID) — tambien
-gratuito, pero mas infraestructura, pendiente para una fase futura si hace
-falta.
+**Trivia rosa** (`packages/games/src/trivia/`): catalogo cerrado de ~40
+preguntas de cultura general sin nada que caduque, 5 preguntas al azar por
+dia, hace falta acertar al menos 4 de 5 para completar el reto (con
+reintentos ilimitados si no llega). El servidor regenera las mismas 5
+preguntas desde la semilla y recalcula la puntuacion, no se fia de la que
+mande el cliente.
+
+82 tests en total entre los nueve motores (`node --test`).
+
+**Practica libre.** Las partidas de practica libre (`/games`, picker dentro
+de cada juego) se generan y validan enteramente en el navegador: sin ranking
+que proteger, no hay nada que "hacer trampa" ganaria, y esto las mantiene
+disponibles incluso sin conexion. Se pueden jugar sin limite a cualquier
+hora del dia, para practicar o simplemente jugar.
+
+## Reto diario, racha e historial
+
+A diferencia del mapa que hubo en una version anterior, aqui **los 9
+minijuegos tienen cada uno su propio reto diario simultaneo**: no es "hoy
+toca sudoku", es sudoku + sopa de letras + memorama + 2048 + secuencia +
+adivina la palabra + buscaminas + puzzle deslizante + trivia, los 9 a la
+vez, cada uno con su propia racha y su propio ranking. Misma semilla
+del dia para todo el mundo (`dailySeed(gameId, gameDay)` en
+`packages/shared/src/seed.ts`), calculada en UTC (`currentGameDay()`) para
+que dos amigas en paises distintos compartan el mismo reto — y cambian
+todos a la vez a medianoche UTC.
+
+A diferencia de la practica libre, esta partida **si la verifica el
+servidor de verdad** (`packages/server/src/modules/daily/daily.service.ts`),
+cada juego con su propia comprobacion (grid de sudoku, palabras de la sopa
+de letras, parejas del memorama, repetir la partida entera de 2048, la
+secuencia de Simon, el ultimo intento de adivinar la palabra, el tablero
+de buscaminas despejado, el puzzle deslizante resuelto tras reproducir los
+movimientos, o la puntuacion del quiz) — es el unico sitio donde merecia
+la pena esa verificacion, porque es el unico con una racha (dias
+consecutivos) que proteger. `GET /api/daily` devuelve el estado de los 9 a
+la vez; `POST /api/daily/complete` y `GET /api/daily/leaderboard` llevan un
+`gameId` explicito para saber de cual de los 9 se trata.
+
+La pantalla de inicio (`/`, `DailyHubPage`) muestra las 9 tarjetas de reto
+con su icono, racha y estado, mas un banner si queda alguno sin hacer hoy,
+con un boton opcional para activar un aviso del navegador (Web Notification
+API, gratis, sin servicio externo). Nota honesta: ese aviso solo puede
+saltar mientras haya una pestana de miniBarbara abierta; un aviso con la
+app cerrada del todo necesitaria Web Push de verdad (service worker + claves
+VAPID) — tambien gratuito, pero mas infraestructura, pendiente para una fase
+futura si hace falta.
+
+**Historial** (`/daily/history`, al estilo de la pagina de estadisticas de
+los juegos de LinkedIn): los ultimos 14 dias, agrupados por dia, con los 9
+juegos de cada uno y si se completaron y en cuanto tiempo — incluidos los
+dias sin jugar, para que se note el hueco. `GET /api/daily/history` calcula
+la lista completa en el servidor, anidada como `dias -> juegos`.
 
 ## Amigas y chat
 
@@ -162,31 +208,44 @@ para una primera version.
 
 ## Ranking del reto diario
 
-`GET /api/daily/leaderboard` compara tu tiempo de hoy con el de tus amigas
-que tambien lo hayan completado (las que no, simplemente no salen en la
-lista), ordenado del mas rapido al mas lento. Aparece automaticamente en la
-pantalla del reto diario en cuanto lo completas.
+`GET /api/daily/leaderboard?gameId=...` compara tu tiempo de hoy en ESE
+juego con el de tus amigas que tambien lo hayan completado hoy (las que no,
+simplemente no salen en la lista), ordenado del mas rapido al mas lento.
+Aparece automaticamente en la pantalla del reto en cuanto lo completas —
+cada uno de los 9 juegos tiene el suyo propio, no se mezclan entre si.
+
+## Instalable en el movil (PWA)
+
+`packages/client/public/manifest.webmanifest` + los iconos en
+`public/icons/` (generados sin dependencias, con un pequeno encoder de PNG
+propio en vez de un servicio externo) hacen que "Anadir a pantalla de
+inicio" desde el navegador del movil cree un icono real y abra la app a
+pantalla completa, sin barra de navegador — se siente como una app
+instalada, aunque siga siendo una pagina web. Esto por si solo NO publica la
+app en internet: sigue haciendo falta desplegar el servidor en algun sitio
+alcanzable (ver `DEPLOY.md`) para que alguien que no sea tu, en su propio
+movil, pueda llegar a ella.
 
 ## Retoques de esta ronda
 
+- **Se elimino el mapa**: el hilo narrativo y el camino de 12 paradas de
+  versiones anteriores desaparecen. En su lugar, la pantalla de inicio es el
+  hub de los 9 retos diarios simultaneos (ver mas arriba); la practica libre
+  vive aparte en `/games`.
+- **Reto diario por juego, no rotativo**: antes tocaba un solo juego cada
+  dia, alternando; ahora los 9 tienen su reto a la vez, cada uno con su
+  propia racha y ranking.
+- **De 5 a 9 minijuegos**: "Adivina la palabra", "Buscaminas", "Puzzle
+  deslizante" y "Trivia rosa" — ver la seccion de Minijuegos mas arriba
+  para el detalle de cada uno.
 - **Sudoku**: en cuanto una casilla se acierta (o es pista original) queda
   bloqueada — no se puede pisar por error. En cuanto un numero ya tiene sus 9
   apariciones colocadas correctamente, se apaga en el teclado numerico
   (`countCorrectPlacements` en `packages/games/src/sudoku/core.ts`).
 - **Iconos, no emojis**: toda la interfaz usa `lucide-react` (SVG, MIT,
   gratis) en vez de emoji — se ven igual en cualquier sistema operativo.
-- **Reto diario variado**: alterna entre sudoku y sopa de letras segun el
-  dia, elegido deterministamente (`pickDailyGameId` en
-  `packages/shared/src/seed.ts`) — no siempre es lo mismo, y el servidor
-  verifica de verdad cualquiera de los dos tipos.
-- **Avatar de cuerpo entero** en la vista grande del editor (piernas, brazos,
-  torso con mas forma); los circulitos pequenos (perfil, amigas, chat) siguen
-  siendo solo cabeza y hombros, que es lo que tiene sentido a ese tamano.
-- **Mapa**: camino mas ancho tipo "sendero de tierra", decoracion de fondo
-  (colinas/nubes en SVG) y chinchetas cuadradas con icono + numero + marca de
-  completado. Es una recreacion "en el espiritu de" un tablero de juego con
-  formas vectoriales propias, no una copia de ninguna imagen — no hay assets
-  de terceros de por medio.
+- **Avatar**: solo cabeza y hombros (`variant="bust"`), en el editor y en
+  todos los circulitos pequenos (perfil, amigas, chat) — sin cuerpo entero.
 
 ## Publicar la app fuera de tu maquina
 
@@ -214,11 +273,10 @@ normal: el servidor se recupera solo.
 - [x] Fase 1.2 — Registro e inicio de sesion
 - [x] Fase 1.3 — Creacion de avatar (y ampliado: mas peinados/ropa/accesorios)
 - [x] Fase 1.4 — Sudoku completo
-- [x] Sopa de letras
-- [x] Memorama
-- [x] Fase 3 — Mapa y progresion, con hilo narrativo (10 paradas)
-- [x] Reto diario variado (sudoku o sopa de letras segun el dia), racha y recordatorio
+- [x] Sopa de letras, Memorama, 2048, Secuencia, Adivina la palabra, Buscaminas, Puzzle deslizante, Trivia rosa (9 minijuegos en total)
 - [x] Fase 4 — Amigas, chat y ranking del reto diario
+- [x] Reto diario simultaneo en los 5 juegos (uno por juego, no rotativo), cada uno con su racha, ranking, recordatorio e historial
+- [x] Practica libre separada del reto diario, en `/games`
 - [ ] Murdoku y cortar cuerdas (motores nuevos, mas grandes)
 - [ ] Fase 5 — Casa y personalizacion avanzada
 - [ ] Publicacion real en Oracle Cloud (guia lista en `DEPLOY.md`, falta crear la cuenta)

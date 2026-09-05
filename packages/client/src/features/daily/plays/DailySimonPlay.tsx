@@ -18,7 +18,7 @@ type Phase = "showing" | "input" | "gameover";
 
 interface DailySimonPlayProps {
   gameDay: string;
-  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs">) => void;
+  onComplete: (payload: Omit<CompleteDailyRequest, "elapsedMs" | "gameId">) => void;
 }
 
 export function DailySimonPlay({ gameDay, onComplete }: DailySimonPlayProps): React.JSX.Element {

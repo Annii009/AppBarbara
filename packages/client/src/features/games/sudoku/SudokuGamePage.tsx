@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PartyPopper } from "lucide-react";
 import {
   countCorrectPlacements,
@@ -13,23 +13,16 @@ import {
 import { DIFFICULTIES, type Difficulty } from "@minibarbara/shared";
 import { GlamCard } from "../../../components/GlamCard.tsx";
 import { Button } from "../../../components/Button.tsx";
-import { mapApi } from "../../map/map-api.ts";
 import { NumberPad } from "./NumberPad.tsx";
 import { SudokuBoard } from "./SudokuBoard.tsx";
 import "./SudokuGamePage.css";
 
 /**
- * Sudoku, en dos modos:
- *  - Practica libre (sin parametros en la URL): picker de dificultad, se
- *    puede repetir sin limite.
- *  - Modo mapa (?node=<id>&difficulty=<d>): llega desde una parada del mapa
- *    con la dificultad ya fijada; al resolverlo avisa al servidor para
- *    desbloquear la siguiente parada (packages/server/src/modules/progress).
- *
- * En ambos casos se genera y valida en el navegador (ver la nota de alcance
- * mas abajo): la unica partida que el servidor valida de verdad es el reto
- * diario (features/daily), porque es la unica con algo que proteger
- * (racha). Aqui no hay nada que "hacer trampa" ganaria.
+ * Sudoku en practica libre: picker de dificultad, se puede repetir sin
+ * limite. Se genera y valida enteramente en el navegador — la unica partida
+ * que el servidor valida de verdad es el reto diario (features/daily),
+ * porque es la unica con una racha que proteger. Aqui no hay nada que
+ * "hacer trampa" ganaria.
  */
 
 const DIFFICULTY_LABELS: Record<Difficulty, string> = {
@@ -54,17 +47,8 @@ function formatElapsed(ms: number): string {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-function isDifficulty(value: string | null): value is Difficulty {
-  return value !== null && (DIFFICULTIES as readonly string[]).includes(value);
-}
-
 export function SudokuGamePage(): React.JSX.Element {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const nodeId = searchParams.get("node");
-  const nodeDifficulty = searchParams.get("difficulty");
-  const isNodeMode = nodeId !== null;
 
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [game, setGame] = useState<SudokuPuzzle | null>(null);
@@ -73,7 +57,6 @@ export function SudokuGamePage(): React.JSX.Element {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [nodeReported, setNodeReported] = useState(false);
 
   useEffect(() => {
     if (!startedAt || finishedAt) return;
@@ -92,26 +75,7 @@ export function SudokuGamePage(): React.JSX.Element {
     setFinishedAt(null);
     setStartedAt(Date.now());
     setNow(Date.now());
-    setNodeReported(false);
   }
-
-  // En modo mapa, arranca sola con la dificultad que trae la URL: no hay picker que mostrar.
-  useEffect(() => {
-    if (isNodeMode && !game) {
-      startGame(isDifficulty(nodeDifficulty) ? nodeDifficulty : "medium");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNodeMode]);
-
-  // Avisa al servidor de que este nodo del mapa esta completado, una sola vez.
-  useEffect(() => {
-    if (finishedAt && nodeId && !nodeReported) {
-      setNodeReported(true);
-      mapApi.completeNode(nodeId).catch((error: unknown) => {
-        console.error("[map] no se pudo guardar el progreso de este nivel:", error);
-      });
-    }
-  }, [finishedAt, nodeId, nodeReported]);
 
   function setCellValue(value: number): void {
     if (!draft || !game || !selected || finishedAt) return;
@@ -150,7 +114,7 @@ export function SudokuGamePage(): React.JSX.Element {
     return exhausted;
   }, [draft, game]);
 
-  if (!isNodeMode && (!difficulty || !game || !draft)) {
+  if (!difficulty || !game || !draft) {
     return (
       <GlamCard eyebrow="Minijuego" title="Sudoku">
         <div className="sudoku-difficulty-picker">
@@ -168,11 +132,6 @@ export function SudokuGamePage(): React.JSX.Element {
     );
   }
 
-  if (!difficulty || !game || !draft) {
-    // Modo mapa: el useEffect de arriba esta arrancando la partida.
-    return <GlamCard eyebrow="Sudoku" title="Preparando…" />;
-  }
-
   const elapsedMs = (finishedAt ?? now) - (startedAt ?? now);
 
   return (
@@ -187,21 +146,10 @@ export function SudokuGamePage(): React.JSX.Element {
           </p>
           <p className="sudoku-win-time">Tiempo: {formatElapsed(finishedAt - startedAt)}</p>
           <div className="sudoku-actions">
-            {isNodeMode ? (
-              <>
-                <Button onClick={() => navigate("/map")}>Volver al mapa</Button>
-                <Button variant="ghost" onClick={() => startGame(difficulty)}>
-                  Jugar otra vez
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={() => startGame(difficulty)}>Jugar otra vez</Button>
-                <Button variant="ghost" onClick={() => setDifficulty(null)}>
-                  Cambiar dificultad
-                </Button>
-              </>
-            )}
+            <Button onClick={() => startGame(difficulty)}>Jugar otra vez</Button>
+            <Button variant="ghost" onClick={() => setDifficulty(null)}>
+              Cambiar dificultad
+            </Button>
           </div>
         </div>
       ) : (
@@ -223,11 +171,8 @@ export function SudokuGamePage(): React.JSX.Element {
             exhaustedValues={exhaustedValues}
           />
           <div className="sudoku-actions">
-            <Button
-              variant="ghost"
-              onClick={() => (isNodeMode ? navigate("/map") : setDifficulty(null))}
-            >
-              {isNodeMode ? "Volver al mapa" : "Cambiar dificultad"}
+            <Button variant="ghost" onClick={() => setDifficulty(null)}>
+              Cambiar dificultad
             </Button>
           </div>
         </>

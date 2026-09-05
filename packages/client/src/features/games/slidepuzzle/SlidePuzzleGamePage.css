@@ -1,0 +1,33 @@
+.slidepuzzle-intro {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.slidepuzzle-intro-text {
+  color: var(--c-ink-soft);
+}
+
+.slidepuzzle-win {
+  display: grid;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  text-align: center;
+}
+
+.slidepuzzle-win-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--c-pink-700);
+}
+
+.slidepuzzle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
